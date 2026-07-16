@@ -1,4 +1,4 @@
-# не тащим в образ лишнее — быстрее сборка, меньше размер
+# keep needless files out of the image — faster build, smaller size
 node_modules
 dist
 .git

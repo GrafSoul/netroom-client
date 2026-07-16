@@ -2,11 +2,11 @@ services:
   web:
     build:
       context: .
-      target: dev            # берём dev-стадию из Dockerfile
+      target: dev            # use the dev stage from the Dockerfile
     command: npm run dev -- --host --port 3000
     ports:
       - "3000:3000"
     env_file: .env
     volumes:
-      - .:/app               # код с хоста внутрь — для hot-reload
-      - /app/node_modules    # но node_modules берём из образа
+      - .:/app               # mount host code into the container for hot-reload
+      - /app/node_modules    # but keep node_modules from the image

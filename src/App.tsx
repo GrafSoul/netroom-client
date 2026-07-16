@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
@@ -6,6 +6,15 @@ import './App.css'
 
 function App() {
   const [count, setCount] = useState(0)
+  // Minimal API smoke test: fetch /ping from the backend on mount.
+  const [ping, setPing] = useState('loading…')
+
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_API_URL}/ping`)
+      .then((res) => res.json())
+      .then((data: { message: string }) => setPing(data.message))
+      .catch(() => setPing('API unreachable'))
+  }, [])
 
   return (
     <>
@@ -28,6 +37,9 @@ function App() {
         >
           Count is {count}
         </button>
+        <p>
+          API says: <code>{ping}</code>
+        </p>
       </section>
 
       <div className="ticks"></div>
