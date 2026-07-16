@@ -1,0 +1,12 @@
+services:
+  web:
+    build:
+      context: .
+      target: dev            # берём dev-стадию из Dockerfile
+    command: npm run dev -- --host --port 3000
+    ports:
+      - "3000:3000"
+    env_file: .env
+    volumes:
+      - .:/app               # код с хоста внутрь — для hot-reload
+      - /app/node_modules    # но node_modules берём из образа

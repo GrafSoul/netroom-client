@@ -1,0 +1,8 @@
+# не тащим в образ лишнее — быстрее сборка, меньше размер
+node_modules
+dist
+.git
+.env
+*.log
+Dockerfile
+docker-compose.yml
