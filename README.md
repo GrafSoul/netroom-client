@@ -1,7 +1,22 @@
 # dev-vault-client
 
-Frontend for **dev-vault** — a React + TypeScript single-page app built with Vite.
-Talks to the `dev-vault-server` API (default `http://localhost:3030`).
+Client single-page app for **dev-vault** — React + TypeScript, built with Vite.
+Talks to the `dev-vault-server` API.
+
+## The dev-vault project
+
+**dev-vault** is split into four repositories, developed and deployed independently:
+
+| Repository                                                       | Role                                       | Local dev               |
+| ---------------------------------------------------------------- | ------------------------------------------ | ----------------------- |
+| [dev-vault-server](https://github.com/GrafSoul/dev-vault-server) | Backend API (NestJS)                       | `http://localhost:3030` |
+| [dev-vault-client](https://github.com/GrafSoul/dev-vault-client) | Client SPA (React + Vite)                  | `http://localhost:3000` |
+| [dev-vault-admin](https://github.com/GrafSoul/dev-vault-admin)   | Admin SPA (React + Vite)                   | `http://localhost:3001` |
+| [dev-vault-infra](https://github.com/GrafSoul/dev-vault-infra)   | Production orchestration (Compose + Caddy) | —                       |
+
+In production each app is served on its own subdomain (`api.` / `app.` / `admin.`)
+behind a single Caddy reverse proxy. See
+[dev-vault-infra](https://github.com/GrafSoul/dev-vault-infra) for deployment.
 
 ## Tech stack
 
@@ -10,29 +25,25 @@ Talks to the `dev-vault-server` API (default `http://localhost:3030`).
 - **ESLint** — flat config with React Hooks / React Refresh rules
 - **Docker** — multi-stage build (Vite dev server / Nginx-served static in prod)
 
-## Requirements
+## Prerequisites
 
-- Node.js 24+ and npm (for local development)
-- Docker + Docker Compose (optional, for containerized runs)
+- Node.js 24+ and npm, and/or
+- [Docker](https://docs.docker.com/get-docker/) + Docker Compose
 
-## Getting started
+## Getting started (local development)
 
 ```bash
-# 1. Install dependencies
 npm install
-
-# 2. Create your local env file from the template
 cp .env.example .env
-
-# 3. Start the dev server (http://localhost:5173)
-npm run dev
+npm run dev              # http://localhost:3000
 ```
 
 ## Environment variables
 
-Copy `.env.example` to `.env` and adjust values. Only variables prefixed with
-`VITE_` are exposed to the client bundle — never put secrets there, they ship to
-the browser.
+Only variables prefixed with `VITE_` are exposed to the client bundle — never put
+secrets there, they ship to the browser. In production `VITE_API_URL` is injected
+at **image build time** via a build-arg (see
+[dev-vault-infra](https://github.com/GrafSoul/dev-vault-infra)), not read from a file.
 
 | Variable       | Description                   | Default                 |
 | -------------- | ----------------------------- | ----------------------- |
@@ -54,21 +65,13 @@ The `Dockerfile` is multi-stage:
 - **dev** — runs the Vite dev server with hot-reload
 - **prod** — serves the built static files through Nginx (SPA fallback to `index.html`)
 
-### Development with Compose
-
 ```bash
-# Starts the dev stage, code mounted for hot-reload, on http://localhost:3000
+# Development with Compose — code mounted for hot-reload, on http://localhost:3000
 docker compose up
-```
 
-### Production image
-
-```bash
-# Build the Nginx-served static image
-docker build --target prod -t dev-vault-client .
-
-# Run it on http://localhost:8080
-docker run -p 8080:80 dev-vault-client
+# Production image — API URL is baked in at build time
+docker build --target prod --build-arg VITE_API_URL=https://api.YOUR_DOMAIN -t dev-vault-client .
+docker run -p 8080:80 dev-vault-client        # http://localhost:8080
 ```
 
 ## Project structure
@@ -82,6 +85,12 @@ src/
 └── index.css      # global styles
 ```
 
+## Deployment
+
+Production is orchestrated from
+[dev-vault-infra](https://github.com/GrafSoul/dev-vault-infra): the `prod` image is
+served by Caddy at `https://app.YOUR_DOMAIN`.
+
 ## License
 
-Private — not for distribution.
+Private project — not for distribution.
