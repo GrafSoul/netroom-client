@@ -17,7 +17,11 @@ EXPOSE 3000
 CMD ["npm", "run", "dev", "--", "--host", "--port", "3000"]
 
 # ---- build: compile static assets into dist/ ----
+# VITE_API_URL is baked into the bundle at build time, so it must be passed
+# per environment via --build-arg (dev: localhost, prod: https://api.YOUR_DOMAIN).
 FROM deps AS build
+ARG VITE_API_URL
+ENV VITE_API_URL=$VITE_API_URL
 COPY . .
 RUN npm run build
 
