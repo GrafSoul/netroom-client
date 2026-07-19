@@ -1,22 +1,22 @@
-# dev-vault-client
+# netroom-client
 
-Client single-page app for **dev-vault** — React + TypeScript, built with Vite.
-Talks to the `dev-vault-server` API.
+Client single-page app for **netroom** — React + TypeScript, built with Vite.
+Talks to the `netroom-server` API.
 
-## The dev-vault project
+## The netroom project
 
-**dev-vault** is split into four repositories, developed and deployed independently:
+**netroom** is split into four repositories, developed and deployed independently:
 
 | Repository                                                       | Role                                       | Local dev               |
 | ---------------------------------------------------------------- | ------------------------------------------ | ----------------------- |
-| [dev-vault-server](https://github.com/GrafSoul/dev-vault-server) | Backend API (NestJS)                       | `http://localhost:3030` |
-| [dev-vault-client](https://github.com/GrafSoul/dev-vault-client) | Client SPA (React + Vite)                  | `http://localhost:3000` |
-| [dev-vault-admin](https://github.com/GrafSoul/dev-vault-admin)   | Admin SPA (React + Vite)                   | `http://localhost:3001` |
-| [dev-vault-infra](https://github.com/GrafSoul/dev-vault-infra)   | Production orchestration (Compose + Caddy) | —                       |
+| [netroom-server](https://github.com/GrafSoul/netroom-server) | Backend API (NestJS)                       | `http://localhost:3030` |
+| [netroom-client](https://github.com/GrafSoul/netroom-client) | Client SPA (React + Vite)                  | `http://localhost:3000` |
+| [netroom-admin](https://github.com/GrafSoul/netroom-admin)   | Admin SPA (React + Vite)                   | `http://localhost:3001` |
+| [netroom-infra](https://github.com/GrafSoul/netroom-infra)   | Production orchestration (Compose + Caddy) | —                       |
 
 In production each app is served on its own subdomain (`api.` / `app.` / `admin.`)
 behind a single Caddy reverse proxy. See
-[dev-vault-infra](https://github.com/GrafSoul/dev-vault-infra) for deployment.
+[netroom-infra](https://github.com/GrafSoul/netroom-infra) for deployment.
 
 ## Tech stack
 
@@ -43,11 +43,11 @@ npm run dev              # http://localhost:3000
 Only variables prefixed with `VITE_` are exposed to the client bundle — never put
 secrets there, they ship to the browser. In production `VITE_API_URL` is injected
 at **image build time** via a build-arg (see
-[dev-vault-infra](https://github.com/GrafSoul/dev-vault-infra)), not read from a file.
+[netroom-infra](https://github.com/GrafSoul/netroom-infra)), not read from a file.
 
 | Variable       | Description                   | Default                 |
 | -------------- | ----------------------------- | ----------------------- |
-| `VITE_API_URL` | Base URL of the dev-vault API | `http://localhost:3030` |
+| `VITE_API_URL` | Base URL of the netroom API | `http://localhost:3030` |
 
 ## Scripts
 
@@ -70,8 +70,8 @@ The `Dockerfile` is multi-stage:
 docker compose up
 
 # Production image — API URL is baked in at build time
-docker build --target prod --build-arg VITE_API_URL=https://api.YOUR_DOMAIN -t dev-vault-client .
-docker run -p 8080:80 dev-vault-client        # http://localhost:8080
+docker build --target prod --build-arg VITE_API_URL=https://api.YOUR_DOMAIN -t netroom-client .
+docker run -p 8080:80 netroom-client        # http://localhost:8080
 ```
 
 ## Project structure
@@ -88,7 +88,7 @@ src/
 ## Deployment
 
 Production is orchestrated from
-[dev-vault-infra](https://github.com/GrafSoul/dev-vault-infra): the `prod` image is
+[netroom-infra](https://github.com/GrafSoul/netroom-infra): the `prod` image is
 served by Caddy at `https://app.YOUR_DOMAIN`.
 
 ## License
